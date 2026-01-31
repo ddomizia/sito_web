@@ -64,6 +64,125 @@ const allProjects = [
     lng: 12.155389,
   },
   {
+    id: "great-mosque-kufa",
+    category: "Architettura",
+    labelProject: "Grande Moschea di Kufa – rilievo fotogrammetrico",
+    labelCity: "Kufa, Iraq",
+    lat: 32.043,
+    lng: 44.401,
+  },
+  {
+    id: "wadi-al-maawil",
+    category: "Archeologia",
+    labelProject: "Attività di rilievi fotogrammetrici",
+    labelCity: "Wadi Al Maawil, Oman",
+    lat: 23.303,
+    lng: 57.535,
+  },
+  {
+    id: "oasi-buckara-mafik",
+    category: "Archeologia",
+    labelProject: "Gestione GIS della missione archeologica MAFIK",
+    labelCity: "Buckara, Uzbekistan",
+    lat: 39.7747,
+    lng: 64.4286,
+  },
+  {
+    id: "isfahan-borj-e-kabotar-ismeo",
+    category: "Archeologia",
+    labelProject: "Gestione GIS della missione Borj–e Kabotar dell'ISMEO",
+    labelCity: "Isfahan, Iran",
+    lat: 32.6546,
+    lng: 51.668,
+  },
+  {
+    id: "petra-topographic-photogrammetry",
+    category: "Archeologia",
+    labelProject: "Rilievo topografico e fotogrammetrico",
+    labelCity: "Petra, Giordania",
+    lat: 30.3285,
+    lng: 35.4444,
+  },
+  {
+    id: "mes-aynak-excavation-graphics",
+    category: "Archeologia",
+    labelProject:
+      "Elaborazione grafica delle tavole di documentazione dei saggi di scavo",
+    labelCity: "Mes Aynak, Afghanistan",
+    lat: 34.387,
+    lng: 69.318,
+  },
+  {
+    id: "yasin-tepe-kurdistan",
+    category: "Archeologia",
+    labelProject: "Yasin Tepe – rilievo archeologico e topografico",
+    labelCity: "Kurdistan iracheno",
+    lat: 35.56,
+    lng: 45.43,
+  },
+  {
+    id: "sabah-al-ahmad-reserve",
+    category: "Archeologia",
+    labelProject:
+      "Sabah Al Ahmad Natural Reserve – rilievo topografico e archeologico",
+    labelCity: "Kuwait",
+    lat: 29.77,
+    lng: 47.73,
+  },
+  {
+    id: "horrea-piperataria-roma",
+    category: "Architettura",
+    labelProject: "Horrea Piperataria – rilievo architettonico",
+    labelCity: "Roma, Italia",
+    lat: 41.8939,
+    lng: 12.4853,
+  },
+  {
+    id: "acquedotto-lobia-vicenza",
+    category: "Architettura",
+    labelProject:
+      "Acquedotto romano di Lobia – rilievo architettonico e topografico",
+    labelCity: "Lobia, Vicenza, Italia",
+    lat: 45.477,
+    lng: 11.607,
+  },
+  {
+    id: "museo-granafei-mesagne",
+    category: "Architettura",
+    labelProject:
+      "Museo Archeologico Ugo Granafei – rilievo architettonico con laser scanner",
+    labelCity: "Mesagne, Italia",
+    lat: 40.5586,
+    lng: 17.8076,
+  },
+  {
+    id: "condominio-lavinio-laserscanner",
+    category: "Architettura",
+    labelProject:
+      "Lavinio – rilievo architettonico con laser scanner di complesso condominiale",
+    labelCity: "Lavinio, Italia",
+    lat: 41.554,
+    lng: 12.602,
+  },
+  {
+    id: "condominio-matelica-laserscanner",
+    category: "Architettura",
+    labelProject:
+      "Matelica – rilievo architettonico con laser scanner di complesso condominiale",
+    labelCity: "Matelica, Italia",
+    lat: 43.255,
+    lng: 13.01,
+  },
+  {
+    id: "palazzo-storico-orvieto-laserscanner",
+    category: "Architettura",
+    labelProject:
+      "Palazzo storico di Orvieto – rilievo architettonico con laser scanner",
+    labelCity: "Orvieto, Italia",
+    lat: 42.718,
+    lng: 12.111,
+  },
+  {
     id: "cuka-ajtoit",
     category: "Archeologia",
     labelProject: "Çuka e Ajtoit – rilievo archeologico",
@@ -71,29 +190,11 @@ const allProjects = [
     lat: 39.681306,
     lng: 20.122944,
   },
-  {
-    id: "mafoub",
-    category: "Sviluppo Web e GIS",
-    labelProject: "Progetto MAFOUB",
-    labelCity: "Museo del Louvre, Francia",
-  },
-  {
-    id: "mafik",
-    category: "Sviluppo Web e GIS",
-    labelProject: "Progetto MAFIK",
-    labelCity: "Museo del Louvre, Francia",
-  },
-  {
-    id: "borj-kabotar",
-    category: "Sviluppo Web e GIS",
-    labelProject: "Progetto Borj-e Kabotar",
-    labelCity: "ISMEO, Roma",
-  },
 ];
 
 // solo i progetti con coordinate vanno sulla mappa
 const mapProjects = allProjects.filter(
-  (p) => typeof p.lat === "number" && typeof p.lng === "number"
+  (p) => typeof p.lat === "number" && typeof p.lng === "number",
 );
 
 export default function Home() {
@@ -430,80 +531,210 @@ function ProjectsSection() {
 /*   MAPPA CON MAPLIBRE  */
 /* ===================== */
 
+/* ===================== */
+/*   MAPPA CON MAPLIBRE  */
+/* ===================== */
+
 function WorldMapSection() {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
-    if (mapRef.current) return; // evita di creare la mappa due volte
+    if (mapRef.current) return;
 
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
-      style: "/world-style.json", // il tuo file in /public
-      center: [20, 30], // Africa–Mediterraneo–Asia
+      style: "/world-style.json",
+      center: [20, 30],
       zoom: 2.2,
       attributionControl: false,
     });
 
     mapRef.current = map;
 
-    // controllo zoom (in basso a destra)
-    map.addControl(
-      new maplibregl.NavigationControl({
-        showCompass: false,
-      }),
-      "bottom-right"
-    );
+    map.addControl(new maplibregl.NavigationControl(), "top-right");
 
-    // quando lo stile è caricato, aggiungiamo i marker personalizzati
+    // 🚫 disabilita SOLO lo zoom con scroll
+    map.scrollZoom.disable();
+
     map.on("load", () => {
-      mapProjects.forEach((p) => {
-        const el = document.createElement("div");
-        el.className = "group relative cursor-pointer";
+      // ===== GEOJSON =====
+      const geojson = {
+        type: "FeatureCollection",
+        features: mapProjects.map((p) => ({
+          type: "Feature",
+          properties: {
+            id: p.id,
+            category: p.category,
+            labelCity: p.labelCity,
+            labelProject: p.labelProject,
+          },
+          geometry: {
+            type: "Point",
+            coordinates: [p.lng, p.lat],
+          },
+        })),
+      };
 
-        // MARKER PERSONALIZZATO: pallino rosa-viola con doppio bordo e alone che pulsa
-        el.innerHTML = `
-          <div class="relative -translate-x-1/2 -translate-y-1/2">
-            <!-- alone esterno che pulsa -->
-            <span class="pointer-events-none absolute inset-[-10px] rounded-full border border-pink-400/40 opacity-0 group-hover:opacity-100 group-hover:animate-ping"></span>
+      // ===== SOURCE CON CLUSTER =====
+      map.addSource("projects", {
+        type: "geojson",
+        data: geojson,
+        cluster: true,
+        clusterMaxZoom: 5,
+        clusterRadius: 50,
+      });
 
-            <!-- anello intermedio (doppio bordo) -->
-            <span class="pointer-events-none absolute inset-[-4px] rounded-full border border-pink-500/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
+      // ===== CLUSTER (PALLONE GRANDE) =====
+      map.addLayer({
+        id: "clusters-pulse",
+        type: "circle",
+        source: "projects",
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": "#ec4899",
+          "circle-radius": 18,
+          "circle-opacity": 0.25,
+        },
+      });
 
-            <!-- pallino centrale -->
-            <span class="relative z-10 block h-[7px] w-[7px] rounded-full bg-pink-500 border border-white transition-transform duration-300 ease-out group-hover:scale-125"></span>
+      const popup = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        offset: [28, 0],
+        anchor: "left",
+        className: "map-label-popup", // ← QUESTO NOME
+      });
+      map.on("mouseenter", "unclustered-point", (e) => {
+        map.getCanvas().style.cursor = "pointer";
 
-            <!-- linea + label -->
-            <div class="pointer-events-none absolute left-4 top-1/2 flex -translate-y-1/2 items-center gap-2 opacity-0 translate-x-2 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:translate-x-0">
-              <span class="h-px w-10 bg-white/80"></span>
-              <span class="border border-[0.25px] border-white/80 bg-black/60 px-3 py-1 text-[11px] leading-snug text-white backdrop-blur-sm">
-                <span class="block font-semibold md:whitespace-nowrap">
-                  ${p.labelCity}
-                </span>
-                <span class="block text-[10px] text-white/80 md:whitespace-nowrap">
-                  ${p.labelProject}
-                </span>
-              </span>
-            </div>
-          </div>
-        `;
+        const { labelCity, labelProject } = e.features[0].properties;
+        const coordinates = e.features[0].geometry.coordinates.slice();
 
-        // click → futura pagina della categoria del progetto
-        el.addEventListener("click", () => {
-          const slug = categoryToSlug(p.category);
-          if (slug) {
-            window.location.href = `/progetti/${slug}`;
-          }
-        });
-
-        new maplibregl.Marker({ element: el })
-          .setLngLat([p.lng, p.lat])
+        popup
+          .setLngLat(coordinates)
+          .setHTML(
+            `
+    <div class="bg-black/60 px-3 py-2 text-[11px] leading-snug text-white backdrop-blur-sm">
+      <span class="block font-semibold whitespace-nowrap">
+        ${labelCity}
+      </span>
+      <span class="block text-[10px] text-white/80 whitespace-nowrap">
+        ${labelProject}
+      </span>
+    </div>
+  `,
+          )
           .addTo(map);
+      });
+
+      map.on("mouseleave", "unclustered-point", () => {
+        map.getCanvas().style.cursor = "";
+        popup.remove();
+      });
+
+      // ===== NUMERO AL CENTRO =====
+      map.addLayer({
+        id: "clusters-core",
+        type: "circle",
+        source: "projects",
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": "#ec4899",
+          "circle-radius": [
+            "step",
+            ["get", "point_count"],
+            8, // pochi punti
+            5,
+            10,
+            10,
+            14,
+          ],
+          "circle-stroke-width": 1.5,
+          "circle-stroke-color": "#ffffff",
+        },
+      });
+
+      // ===== PUNTI SINGOLI =====
+      map.addLayer({
+        id: "unclustered-point",
+        type: "circle",
+        source: "projects",
+        filter: ["!", ["has", "point_count"]],
+        paint: {
+          "circle-color": "#ec4899",
+          "circle-radius": 6,
+          "circle-stroke-width": 1.5,
+          "circle-stroke-color": "#ffffff",
+        },
+      });
+      map.addLayer({
+        id: "unclustered-pulse",
+        type: "circle",
+        source: "projects",
+        filter: ["!", ["has", "point_count"]],
+        paint: {
+          "circle-color": "#ec4899",
+          "circle-radius": 6,
+          "circle-opacity": 0.4,
+        },
+      });
+      map.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "projects",
+        filter: ["has", "point_count"],
+        layout: {
+          "text-field": "{point_count_abbreviated}",
+          "text-size": 12,
+        },
+        paint: {
+          "text-color": "#ffffff",
+        },
+      });
+
+      let pulseRadius = 6;
+      let growing = true;
+
+      function animatePulse() {
+        if (!map.getLayer("unclustered-pulse")) return;
+
+        pulseRadius += growing ? 0.06 : -0.06;
+        if (pulseRadius > 14) growing = false;
+        if (pulseRadius < 6) growing = true;
+
+        map.setPaintProperty("unclustered-pulse", "circle-radius", pulseRadius);
+        map.setPaintProperty(
+          "clusters-pulse",
+          "circle-radius",
+          pulseRadius + 6,
+        );
+
+        requestAnimationFrame(animatePulse);
+      }
+
+      animatePulse();
+
+      // ===== CLICK SU CLUSTER → ZOOM =====
+      map.on("click", "clusters", (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ["clusters"],
+        });
+        const clusterId = features[0].properties.cluster_id;
+
+        map
+          .getSource("projects")
+          .getClusterExpansionZoom(clusterId, (err, zoom) => {
+            if (err) return;
+            map.easeTo({
+              center: features[0].geometry.coordinates,
+              zoom,
+            });
+          });
       });
     });
 
-    // cleanup quando si smonta il componente
     return () => {
       map.remove();
     };
@@ -514,21 +745,15 @@ function WorldMapSection() {
       id="progetti-mappa"
       className="border-t border-neutral-200 bg-white py-16 md:py-20"
     >
-      {/* Testo centrato */}
       <div className="mx-auto max-w-6xl px-4 md:px-6">
-        <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-neutral-500">
-              Progetti nel mondo
-            </p>
-            <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
-              Una selezione di luoghi in cui abbiamo lavorato
-            </h2>
-          </div>
-        </div>
+        <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-neutral-500">
+          Progetti nel mondo
+        </p>
+        <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
+          Una selezione di luoghi in cui abbiamo lavorato
+        </h2>
       </div>
 
-      {/* Mappa a tutta larghezza */}
       <div className="mt-8 h-[420px] w-full md:h-[520px]">
         <div ref={mapContainerRef} className="h-full w-full" />
       </div>
@@ -553,7 +778,7 @@ const teamMembers = [
     name: "Domizia D'Erasmo",
     role: "Archeologa",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sed eros vel libero tincidunt aliquet. Cras sed felis non libero sollicitudin vulputate.",
+      "Archeologa, specializzata nello studio del paesaggio e degli insediamenti tra Tardoantico e Alto Medioevo, con particolare attenzione al Mediterraneo orientale e al Vicino Oriente. Ha conseguito come ultimo titolo il Dottorato di Ricerca in Archeologia presso la Sapienza Università di Roma. La sua ricerca integra fonti storiche, dati archeologici e strumenti digitali, con un forte impiego di GIS, remote sensing e metodologie di documentazione del territorio. Ha maturato esperienza in attività di rilievo archeologico, architettonico e topografico, fotogrammetria e laser scanning, nonché nella gestione e analisi di database geospaziali applicati alla ricerca archeologica. Ha partecipato a missioni e progetti di ricerca in Italia, Medio Oriente e Asia centrale, occupandosi sia di documentazione sul campo sia di restituzione grafica e gestione GIS dei dati. I suoi interessi scientifici includono l’archeologia del paesaggio, le trasformazioni insediative e amministrative, e l’applicazione delle Digital Humanities allo studio delle società del passato.",
   },
   {
     id: "giulia-mariotti",
@@ -568,6 +793,13 @@ const teamMembers = [
     role: "Archeologo",
     description:
       "Marco Russo è un archeologo professionista, iscritto alla Prima Fascia degli elenchi ministeriali e abilitato alla redazione del documento di valutazione archeologica preventiva. Affianca società di ingegneria e imprese impegnate in progetti infrastrutturali ed energetici, occupandosi di archeologia preventiva e gestione del rischio archeologico dalla fase di progettazione al cantiere. Specializzato nello studio della ceramica medievale di ambito mediterraneo, ha maturato esperienze in scavi e progetti nazionali e internazionali (tra cui Gerusalemme, Albania e Arabia Saudita, progetto “NEOM Heritage Land Survey Phase 2”), oltre a attività continuative di sorveglianza archeologica per reti fognarie ed elettriche e interventi per metanodotti e impianti fotovoltaici. Formatosi tra l’Università di Pisa (laurea magistrale in Archeologia Medievale) e la Sapienza Università di Roma (diploma di specializzazione in Beni Archeologici), integra competenze GIS, gestione di banche dati e compilazione del modulo VPIA in un approccio data-driven e multidisciplinare alla valutazione del territorio.",
+  },
+  {
+    id: "valerio-astolfi",
+    name: "Valerio Astolfi",
+    role: "Archeologo",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer sit amet felis id magna dictum facilisis. Curabitur vitae tortor non justo luctus dignissim.",
   },
 ];
 
@@ -601,25 +833,21 @@ function ChiSiamoSection() {
           {teamMembers.map((member) => (
             <div
               key={member.id}
-              className="group relative flex h-full flex-col border border-neutral-300 bg-neutral-100"
+              className="group flex h-full flex-col border border-neutral-300 bg-neutral-100"
             >
               {/* FOTO / PLACEHOLDER */}
-              <div className="h-48 w-full bg-neutral-300">
-                {/* Qui potrai mettere <img> o <Image> con la foto */}
-              </div>
+              <div className="h-48 w-full bg-neutral-300" />
 
-              {/* BARRA IN BASSO CON NOME + RUOLO */}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-0 bg-white px-3 py-2 text-[11px] leading-snug text-neutral-900 transition-transform duration-200 md:translate-y-full md:group-hover:translate-y-0">
+              {/* BLOCCO TESTO (SPA﻿ZIO REALE, NON OVERLAY) */}
+              <div className="bg-white px-3 py-2">
                 <button
                   type="button"
-                  className="pointer-events-auto text-[11px] font-semibold uppercase tracking-[0.18em] underline-offset-2 hover:underline"
+                  className="text-[11px] font-semibold uppercase tracking-[0.18em] underline-offset-2 hover:underline"
                   onClick={() => setSelectedMember(member)}
                 >
                   {member.name}
                 </button>
-                <p className="pointer-events-auto text-[10px] text-neutral-500">
-                  {member.role}
-                </p>
+                <p className="text-[10px] text-neutral-500">{member.role}</p>
               </div>
             </div>
           ))}
@@ -737,7 +965,7 @@ function ContattiSection() {
     // per inviare la mail allo studio (es. con nodemailer o un servizio esterno).
     console.log({ email, subject, message, phone, phoneTime });
     alert(
-      "Per ora questo modulo è solo dimostrativo.\nIn futuro qui potremo collegarlo alla mail dello studio."
+      "Per ora questo modulo è solo dimostrativo.\nIn futuro qui potremo collegarlo alla mail dello studio.",
     );
     setOpen(false);
   };
