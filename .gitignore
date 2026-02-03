@@ -6,4 +6,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .vercel
+# immagini troppo pesanti (meglio ottimizzarle prima)
+public/images/casa-donne-hero-03.png
+public/images/casa-donne-hero-04.png
+public/images/casa-donne-hero.png
 
