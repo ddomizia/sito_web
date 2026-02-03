@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import maplibregl from "maplibre-gl";
+import WorldMapSection from "./components/WorldMapSection";
 
 /* ===================== */
 /*    IMMAGINI HERO      */
@@ -47,15 +48,16 @@ function categoryToSlug(category) {
 
 const allProjects = [
   {
-    id: "casa-donne",
+    id: "Roma",
     category: "Architettura",
-    labelProject: "Casa delle Donne – Lucha y Siesta, Rilievo architettonico",
+    labelProject: `- Casa delle Donne – Lucha y Siesta, Rilievo architettonico
+- Horrea Piperataria – rilievo architettonico`,
     labelCity: "Roma, Italia",
     lat: 41.9028,
     lng: 12.4964,
   },
   {
-    id: "villa-lante",
+    id: "Bagnaia",
     category: "Architettura",
     labelProject:
       "Villa Lante – restituzione grafica degli interni ed esterni, rilievo architettonico",
@@ -64,7 +66,7 @@ const allProjects = [
     lng: 12.155389,
   },
   {
-    id: "great-mosque-kufa",
+    id: "Kufa",
     category: "Architettura",
     labelProject: "Grande Moschea di Kufa – rilievo fotogrammetrico",
     labelCity: "Kufa, Iraq",
@@ -72,7 +74,7 @@ const allProjects = [
     lng: 44.401,
   },
   {
-    id: "wadi-al-maawil",
+    id: "Oman",
     category: "Archeologia",
     labelProject: "Attività di rilievi fotogrammetrici",
     labelCity: "Wadi Al Maawil, Oman",
@@ -80,7 +82,7 @@ const allProjects = [
     lng: 57.535,
   },
   {
-    id: "oasi-buckara-mafik",
+    id: "Uzbekistan",
     category: "Archeologia",
     labelProject: "Gestione GIS della missione archeologica MAFIK",
     labelCity: "Buckara, Uzbekistan",
@@ -88,7 +90,7 @@ const allProjects = [
     lng: 64.4286,
   },
   {
-    id: "isfahan-borj-e-kabotar-ismeo",
+    id: "Iran",
     category: "Archeologia",
     labelProject: "Gestione GIS della missione Borj–e Kabotar dell'ISMEO",
     labelCity: "Isfahan, Iran",
@@ -96,7 +98,7 @@ const allProjects = [
     lng: 51.668,
   },
   {
-    id: "petra-topographic-photogrammetry",
+    id: "Giordania",
     category: "Archeologia",
     labelProject: "Rilievo topografico e fotogrammetrico",
     labelCity: "Petra, Giordania",
@@ -104,7 +106,7 @@ const allProjects = [
     lng: 35.4444,
   },
   {
-    id: "mes-aynak-excavation-graphics",
+    id: "Afghanistan",
     category: "Archeologia",
     labelProject:
       "Elaborazione grafica delle tavole di documentazione dei saggi di scavo",
@@ -113,7 +115,7 @@ const allProjects = [
     lng: 69.318,
   },
   {
-    id: "yasin-tepe-kurdistan",
+    id: "Kurdistan",
     category: "Archeologia",
     labelProject: "Yasin Tepe – rilievo archeologico e topografico",
     labelCity: "Kurdistan iracheno",
@@ -121,21 +123,13 @@ const allProjects = [
     lng: 45.43,
   },
   {
-    id: "sabah-al-ahmad-reserve",
+    id: "Kuwait",
     category: "Archeologia",
     labelProject:
       "Sabah Al Ahmad Natural Reserve – rilievo topografico e archeologico",
     labelCity: "Kuwait",
     lat: 29.77,
     lng: 47.73,
-  },
-  {
-    id: "horrea-piperataria-roma",
-    category: "Architettura",
-    labelProject: "Horrea Piperataria – rilievo architettonico",
-    labelCity: "Roma, Italia",
-    lat: 41.8939,
-    lng: 12.4853,
   },
   {
     id: "acquedotto-lobia-vicenza",
@@ -192,10 +186,21 @@ const allProjects = [
   },
 ];
 
-// solo i progetti con coordinate vanno sulla mappa
+/* ===================== */
+/*   HOME: SOLO 4        */
+/* ===================== */
+
+const LAST_PROJECTS_LIMIT = 4;
+
+const latestProjects = [...allProjects].slice(-LAST_PROJECTS_LIMIT).reverse();
+
 const mapProjects = allProjects.filter(
   (p) => typeof p.lat === "number" && typeof p.lng === "number",
 );
+
+/* ===================== */
+/*        HOME           */
+/* ===================== */
 
 export default function Home() {
   return (
@@ -204,13 +209,104 @@ export default function Home() {
       <main>
         <Hero />
         <ServiziSection />
-        <ProjectsSection />
-        <WorldMapSection />
+        <HomeProjectsSection projects={latestProjects} />
+        <WorldMapSection
+          mapProjects={mapProjects}
+          categoryToSlug={categoryToSlug}
+        />
         <ChiSiamoSection />
         <PartnersSection />
         <ContattiSection />
       </main>
     </div>
+  );
+}
+
+/* ===================== */
+/*    SEZIONE PROGETTI   */
+/* ===================== */
+
+function HomeProjectsSection({ projects }) {
+  const [activeCategory, setActiveCategory] = useState("Tutti");
+
+  const filteredProjects =
+    activeCategory === "Tutti"
+      ? projects
+      : projects.filter((p) => p.category === activeCategory);
+
+  return (
+    <section
+      id="progetti"
+      className="border-t border-neutral-200 bg-white py-16 md:py-20"
+    >
+      <div className="mx-auto max-w-6xl px-4 md:px-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-neutral-500">
+              Progetti
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
+              Alcuni lavori selezionati.
+            </h2>
+          </div>
+
+          <div className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.18em]">
+            {PROJECT_FILTERS.map((cat) => {
+              const isActive = activeCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={
+                    "border px-3 py-1 transition " +
+                    (isActive
+                      ? "border-neutral-500 bg-neutral-300 text-neutral-900"
+                      : "border-neutral-300 bg-white text-neutral-600 hover:border-neutral-500 hover:text-neutral-900")
+                  }
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-2 md:gap-6">
+          {filteredProjects.map((p) => {
+            const slug = categoryToSlug(p.category);
+            return (
+              <a
+                key={p.id}
+                href={`/progetti/${slug}`}
+                className="group flex h-32 flex-col justify-between border border-neutral-300 bg-neutral-50 px-4 py-3 transition hover:border-neutral-900 hover:bg-neutral-100 md:h-40"
+              >
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-neutral-500">
+                    {p.category}
+                  </p>
+                  <h3 className="mt-1 text-sm font-semibold">
+                    {p.labelProject}
+                  </h3>
+                  <p className="mt-1 text-xs text-neutral-500">{p.labelCity}</p>
+                </div>
+                <span className="text-[10px] uppercase tracking-[0.18em] text-neutral-500 group-hover:text-neutral-900">
+                  Vedi progetto →
+                </span>
+              </a>
+            );
+          })}
+        </div>
+
+        <div className="mt-6 flex justify-end">
+          <a
+            href="/progetti"
+            className="text-[11px] uppercase tracking-[0.18em] text-neutral-500 hover:text-neutral-900"
+          >
+            Vedi altri progetti →
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -227,7 +323,7 @@ function Navbar() {
         {/* LOGO IN ALTO A SINISTRA */}
         <div className="flex items-center gap-2 text-white">
           {/* qui potrai mettere un vero logo immagine/SVG */}
-          <div className="h-7 w-7 border border-white/80" />
+          <img src="/logo.png" alt="Studio Nome" className="h-7 w-7" />
           <div className="flex flex-col leading-none">
             <span className="text-xs font-semibold uppercase tracking-[0.22em]">
               Nome Studio
@@ -378,10 +474,16 @@ function Hero() {
               Descrizione studio
             </p>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              nunc massa, vulputate sit amet felis id, sagittis dapibus velit.
-              Nulla facilisi. Nunc quis odio laoreet, sagittis urna non, congue
-              ante.
+              Lo Studio opera nei settori dell’architettura e dell’archeologia,
+              offrendo servizi di rilievo, analisi, documentazione e
+              restituzione grafica del costruito e del territorio. Le attività
+              si basano sulla collaborazione tra professionisti con competenze
+              complementari, integrando progettazione, ricerca
+              storico-archeologica e metodologie digitali avanzate. La sinergia
+              del team consente un approccio interdisciplinare capace di
+              affrontare contesti complessi e stratificati, garantendo letture
+              accurate e interventi coerenti con le caratteristiche storiche e
+              paesaggistiche dei luoghi.
             </p>
           </div>
         </div>
@@ -401,45 +503,114 @@ function ServiziSection() {
       className="border-t border-neutral-200 bg-white py-16 md:py-20"
     >
       <div className="mx-auto max-w-6xl px-4 md:px-6">
+        {/* HEADER */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-neutral-500">
               Servizi
             </p>
             <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
-              Cosa facciamo.
+              Cosa facciamo
             </h2>
           </div>
           <p className="max-w-md text-xs text-neutral-500 md:text-sm">
-            Qui potremo elencare i principali ambiti di lavoro: rilievo,
-            progettazione, analisi storica, restituzione grafica e consulenze
-            specialistiche in contesti architettonici e archeologici.
+            Lo Studio offre servizi integrati nei campi dell’architettura e
+            dell’archeologia, con un approccio interdisciplinare che unisce
+            competenze tecniche, analisi scientifica e strumenti digitali
+            avanzati.
           </p>
         </div>
 
-        {/* Placeholder: poi lo sostituiremo con la struttura definitiva */}
-        <div className="mt-8 text-sm text-neutral-500">
-          <p className="text-xs md:text-sm">
-            Contenuto provvisorio: in questa sezione inseriremo la descrizione
-            dettagliata dei servizi, organizzata in card o blocchi tematici.
-          </p>
+        {/* SERVIZI */}
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Scoping */}
+          <div className="border border-neutral-300 bg-neutral-50 px-5 py-4">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+              Scoping preventivo
+            </h3>
+            <p className="mt-2 text-xs text-neutral-600">
+              Analisi preliminare dei contesti territoriali e normativi, volta a
+              definire criticità, potenzialità e strategie di intervento nelle
+              fasi iniziali di progetto.
+            </p>
+          </div>
+
+          {/* VPIA */}
+          <div className="border border-neutral-300 bg-neutral-50 px-5 py-4">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+              Verifiche preventive dell’interesse archeologico
+            </h3>
+            <p className="mt-2 text-xs text-neutral-600">
+              Redazione di studi e documentazione per la valutazione preventiva
+              del rischio archeologico, a supporto di interventi edilizi,
+              infrastrutturali ed energetici.
+            </p>
+          </div>
+
+          {/* Rilievi */}
+          <div className="border border-neutral-300 bg-neutral-50 px-5 py-4">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+              Rilievi architettonici e archeologici
+            </h3>
+            <p className="mt-2 text-xs text-neutral-600">
+              Attività di rilievo diretto e strumentale del costruito e del
+              contesto archeologico, finalizzate alla documentazione, allo studio
+              e alla progettazione.
+            </p>
+          </div>
+
+          {/* Fotogrammetria */}
+          <div className="border border-neutral-300 bg-neutral-50 px-5 py-4">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+              Fotogrammetria e aerofotogrammetria
+            </h3>
+            <p className="mt-2 text-xs text-neutral-600">
+              Produzione di modelli tridimensionali, ortofoto e restituzioni
+              metriche tramite fotogrammetria terrestre e rilievi da drone.
+            </p>
+          </div>
+
+          {/* GIS */}
+          <div className="border border-neutral-300 bg-neutral-50 px-5 py-4">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+              Progetti GIS e Web GIS
+            </h3>
+            <p className="mt-2 text-xs text-neutral-600">
+              Progettazione e gestione di sistemi informativi geografici per
+              l’analisi, l’organizzazione e la visualizzazione di dati
+              archeologici e territoriali.
+            </p>
+          </div>
+
+          {/* Dati */}
+          <div className="border border-neutral-300 bg-neutral-50 px-5 py-4">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+              Elaborazione di dati archeologici
+            </h3>
+            <p className="mt-2 text-xs text-neutral-600">
+              Analisi, interpretazione e restituzione grafica di dati di scavo,
+              survey e fonti storiche, integrate in contesti di ricerca e
+              progettazione.
+            </p>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
+
 /* ===================== */
 /*    SEZIONE PROGETTI   */
 /* ===================== */
 
-function ProjectsSection() {
+function ProjectsSection({ projects }) {
   const [activeCategory, setActiveCategory] = useState("Tutti");
 
   const filteredProjects =
     activeCategory === "Tutti"
-      ? allProjects
-      : allProjects.filter((p) => p.category === activeCategory);
+      ? projects
+      : projects.filter((p) => p.category === activeCategory);
 
   return (
     <section
@@ -457,14 +628,12 @@ function ProjectsSection() {
             </h2>
           </div>
 
-          {/* FILTRI A DESTRA */}
           <div className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.18em]">
             {PROJECT_FILTERS.map((cat) => {
               const isActive = activeCategory === cat;
               return (
                 <button
                   key={cat}
-                  type="button"
                   onClick={() => setActiveCategory(cat)}
                   className={
                     "border px-3 py-1 transition " +
@@ -480,40 +649,32 @@ function ProjectsSection() {
           </div>
         </div>
 
-        {/* GRID CARDS */}
         <div className="mt-8 grid gap-4 md:grid-cols-2 md:gap-6">
           {filteredProjects.map((p) => {
             const slug = categoryToSlug(p.category);
-            // futura pagina con tutti i progetti della categoria
-            const href = slug ? `/progetti/${slug}` : "#";
-
             return (
               <a
                 key={p.id}
-                href={href}
-                className="group flex h-32 flex-col justify-between border border-neutral-300 bg-neutral-50 px-4 py-3 text-left transition hover:border-neutral-900 hover:bg-neutral-100 md:h-40"
+                href={`/progetti/${slug}`}
+                className="group flex h-32 flex-col justify-between border border-neutral-300 bg-neutral-50 px-4 py-3 transition hover:border-neutral-900 hover:bg-neutral-100 md:h-40"
               >
                 <div>
-                  <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-neutral-500">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-neutral-500">
                     {p.category}
                   </p>
-                  <h3 className="mt-1 text-sm font-semibold tracking-tight">
+                  <h3 className="mt-1 text-sm font-semibold">
                     {p.labelProject}
                   </h3>
                   <p className="mt-1 text-xs text-neutral-500">{p.labelCity}</p>
                 </div>
-                <div className="mt-3 flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-neutral-500">
-                  <span className="transition group-hover:text-neutral-900">
-                    Vedi progetto
-                  </span>
-                  <span className="h-px w-10 bg-neutral-400 transition group-hover:bg-neutral-900" />
-                </div>
+                <span className="text-[10px] uppercase tracking-[0.18em] text-neutral-500 group-hover:text-neutral-900">
+                  Vedi progetto →
+                </span>
               </a>
             );
           })}
         </div>
 
-        {/* LINK "VEDI ALTRI PROGETTI" */}
         <div className="mt-6 flex justify-end">
           <a
             href="/progetti"
@@ -528,241 +689,7 @@ function ProjectsSection() {
 }
 
 /* ===================== */
-/*   MAPPA CON MAPLIBRE  */
-/* ===================== */
-
-/* ===================== */
-/*   MAPPA CON MAPLIBRE  */
-/* ===================== */
-
-function WorldMapSection() {
-  const mapContainerRef = useRef(null);
-  const mapRef = useRef(null);
-
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
-    if (mapRef.current) return;
-
-    const map = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: "/world-style.json",
-      center: [20, 30],
-      zoom: 2.2,
-      attributionControl: false,
-    });
-
-    mapRef.current = map;
-
-    map.addControl(new maplibregl.NavigationControl(), "top-right");
-
-    // 🚫 disabilita SOLO lo zoom con scroll
-    map.scrollZoom.disable();
-
-    map.on("load", () => {
-      // ===== GEOJSON =====
-      const geojson = {
-        type: "FeatureCollection",
-        features: mapProjects.map((p) => ({
-          type: "Feature",
-          properties: {
-            id: p.id,
-            category: p.category,
-            labelCity: p.labelCity,
-            labelProject: p.labelProject,
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [p.lng, p.lat],
-          },
-        })),
-      };
-
-      // ===== SOURCE CON CLUSTER =====
-      map.addSource("projects", {
-        type: "geojson",
-        data: geojson,
-        cluster: true,
-        clusterMaxZoom: 5,
-        clusterRadius: 50,
-      });
-
-      // ===== CLUSTER (PALLONE GRANDE) =====
-      map.addLayer({
-        id: "clusters-pulse",
-        type: "circle",
-        source: "projects",
-        filter: ["has", "point_count"],
-        paint: {
-          "circle-color": "#ec4899",
-          "circle-radius": 18,
-          "circle-opacity": 0.25,
-        },
-      });
-
-      const popup = new maplibregl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        offset: [28, 0],
-        anchor: "left",
-        className: "map-label-popup", // ← QUESTO NOME
-      });
-      map.on("mouseenter", "unclustered-point", (e) => {
-        map.getCanvas().style.cursor = "pointer";
-
-        const { labelCity, labelProject } = e.features[0].properties;
-        const coordinates = e.features[0].geometry.coordinates.slice();
-
-        popup
-          .setLngLat(coordinates)
-          .setHTML(
-            `
-    <div class="bg-black/60 px-3 py-2 text-[11px] leading-snug text-white backdrop-blur-sm">
-      <span class="block font-semibold whitespace-nowrap">
-        ${labelCity}
-      </span>
-      <span class="block text-[10px] text-white/80 whitespace-nowrap">
-        ${labelProject}
-      </span>
-    </div>
-  `,
-          )
-          .addTo(map);
-      });
-
-      map.on("mouseleave", "unclustered-point", () => {
-        map.getCanvas().style.cursor = "";
-        popup.remove();
-      });
-
-      // ===== NUMERO AL CENTRO =====
-      map.addLayer({
-        id: "clusters-core",
-        type: "circle",
-        source: "projects",
-        filter: ["has", "point_count"],
-        paint: {
-          "circle-color": "#ec4899",
-          "circle-radius": [
-            "step",
-            ["get", "point_count"],
-            8, // pochi punti
-            5,
-            10,
-            10,
-            14,
-          ],
-          "circle-stroke-width": 1.5,
-          "circle-stroke-color": "#ffffff",
-        },
-      });
-
-      // ===== PUNTI SINGOLI =====
-      map.addLayer({
-        id: "unclustered-point",
-        type: "circle",
-        source: "projects",
-        filter: ["!", ["has", "point_count"]],
-        paint: {
-          "circle-color": "#ec4899",
-          "circle-radius": 6,
-          "circle-stroke-width": 1.5,
-          "circle-stroke-color": "#ffffff",
-        },
-      });
-      map.addLayer({
-        id: "unclustered-pulse",
-        type: "circle",
-        source: "projects",
-        filter: ["!", ["has", "point_count"]],
-        paint: {
-          "circle-color": "#ec4899",
-          "circle-radius": 6,
-          "circle-opacity": 0.4,
-        },
-      });
-      map.addLayer({
-        id: "cluster-count",
-        type: "symbol",
-        source: "projects",
-        filter: ["has", "point_count"],
-        layout: {
-          "text-field": "{point_count_abbreviated}",
-          "text-size": 12,
-        },
-        paint: {
-          "text-color": "#ffffff",
-        },
-      });
-
-      let pulseRadius = 6;
-      let growing = true;
-
-      function animatePulse() {
-        if (!map.getLayer("unclustered-pulse")) return;
-
-        pulseRadius += growing ? 0.06 : -0.06;
-        if (pulseRadius > 14) growing = false;
-        if (pulseRadius < 6) growing = true;
-
-        map.setPaintProperty("unclustered-pulse", "circle-radius", pulseRadius);
-        map.setPaintProperty(
-          "clusters-pulse",
-          "circle-radius",
-          pulseRadius + 6,
-        );
-
-        requestAnimationFrame(animatePulse);
-      }
-
-      animatePulse();
-
-      // ===== CLICK SU CLUSTER → ZOOM =====
-      map.on("click", "clusters", (e) => {
-        const features = map.queryRenderedFeatures(e.point, {
-          layers: ["clusters"],
-        });
-        const clusterId = features[0].properties.cluster_id;
-
-        map
-          .getSource("projects")
-          .getClusterExpansionZoom(clusterId, (err, zoom) => {
-            if (err) return;
-            map.easeTo({
-              center: features[0].geometry.coordinates,
-              zoom,
-            });
-          });
-      });
-    });
-
-    return () => {
-      map.remove();
-    };
-  }, []);
-
-  return (
-    <section
-      id="progetti-mappa"
-      className="border-t border-neutral-200 bg-white py-16 md:py-20"
-    >
-      <div className="mx-auto max-w-6xl px-4 md:px-6">
-        <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-neutral-500">
-          Progetti nel mondo
-        </p>
-        <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
-          Una selezione di luoghi in cui abbiamo lavorato
-        </h2>
-      </div>
-
-      <div className="mt-8 h-[420px] w-full md:h-[520px]">
-        <div ref={mapContainerRef} className="h-full w-full" />
-      </div>
-    </section>
-  );
-}
-
-/* ===================== */
-/*      CHI SIAMOO       */
+/*      CHI SIAMO        */
 /* ===================== */
 
 const teamMembers = [
@@ -993,11 +920,11 @@ function ContattiSection() {
           {/* TESTO / CONTATTI A DESTRA */}
           <div className="max-w-xl text-xs text-neutral-600 md:text-sm">
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              tempus, lacus at cursus tristique, enim risus interdum lorem, ut
-              scelerisque nisl velit quis augue. In futuro qui inseriremo i
-              contatti: email, recapiti, profili professionali e link ai social
-              o ai portfolio.
+              Lo Studio riunisce competenze e professionalità diverse nei campi
+              dell’architettura e dell’archeologia. È possibile contattarci via
+              email per richieste di informazioni, consulenze o preventivi.
+              Sarete ricontattati nel più breve tempo possibile dai
+              professionisti competenti per l’ambito di interesse indicato.
             </p>
 
             <button
@@ -1085,7 +1012,7 @@ function ContattiSection() {
                     name="phone"
                     type="tel"
                     className="w-full border border-neutral-300 bg-neutral-50 px-3 py-2 text-xs text-neutral-800 outline-none focus:border-neutral-900 placeholder:text-neutral-400"
-                    placeholder="Se preferisce essere ricontattato telefonicamente ci scriva il suo numero di telefono."
+                    placeholder=""
                   />
                 </div>
 
@@ -1098,7 +1025,7 @@ function ContattiSection() {
                     name="phoneTime"
                     type="text"
                     className="w-full border border-neutral-300 bg-neutral-50 px-3 py-2 text-xs text-neutral-800 outline-none focus:border-neutral-900 placeholder:text-neutral-400"
-                    placeholder="Ci indichi una fascia oraria in cui preferisce essere contattato telefonicamente."
+                    placeholder="Fascia oraria in cui preferisce essere contattata/o."
                   />
                 </div>
               </div>
