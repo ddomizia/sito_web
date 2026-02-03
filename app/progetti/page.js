@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 /* ========================= */
 /*   CATEGORIE & PROGETTI    */
@@ -57,7 +58,7 @@ const PROJECTS = [
     thumbnail: "/images/casa-donne-hero-03.png", // placeholder
   },
   {
-    id: "borj-kabotar",
+    id: "borj-e-kabotar",
     category: "Sviluppo Web e GIS",
     name: "Progetto Borj-e Kabotar",
     location: "Roma, Italia",
